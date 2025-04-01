@@ -1,0 +1,27 @@
+# Use a specific Python base image
+FROM python:3.12.1-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the .env and other necessary files
+COPY .env ./
+COPY reconciliation_script.py ./
+COPY .readme ./
+COPY code_documentation.txt ./
+
+# Copy the requirements.txt file
+COPY requirements.txt ./
+
+# Install dependencies (use the default PyPI index)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the application port (if your script runs a web service, otherwise you may not need this)
+EXPOSE 20030
+
+# Use a non-root user for security
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
+
+# Command to run the Python script
+CMD ["python", "reconciliation_script.py"]

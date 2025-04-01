@@ -1,0 +1,95 @@
+# Reconciliation Automation Script
+
+## Problem Statement
+Financial reconciliation involves matching transactions between two systems (SysA and SysB). Some transactions are flagged as `Not Found - SysB`, requiring manual review. This script automates:
+- Extracting relevant data from reconciliation records.
+- Classifying resolution statuses (Resolved, Unresolved, Pending Action).
+- Suggesting next steps for unresolved cases.
+- Identifying patterns in resolved cases for potential auto-closure.
+
+## Approach
+1. **Preprocessing & Categorization**
+   - Load reconciliation data from CSV files.
+   - Extract relevant transactions (`Not Found - SysB`).
+   - Merge data with resolution comments.
+2. **Classification & Resolution Handling**
+   - Use OpenAI's GPT model to classify cases as **Resolved**, **Unresolved**, or **Pending Action Required**.
+   - Suggest resolution steps for unresolved cases.
+   - Identify patterns in resolved cases for potential auto-closure.
+3. **Output Generation**
+   - Generate CSV files:
+     - `resolved_cases.csv` (cases marked as resolved).
+     - `unresolved_cases.csv` (cases needing further action).
+     - `patterns_for_auto_closure.csv` (common patterns for unresolved cases).
+     - `auto_closure_patterns.csv` (common patterns for resolved cases).
+
+## Environment Setup
+
+### Prerequisites
+- Python 3.8+
+- Install dependencies:
+  ```sh
+  pip install pandas openai smtplib concurrent.futures
+
+## Setting Up a Virtual Environment
+To ensure a clean and isolated environment for running the script, follow these steps:
+Create a Virtual Environment (if not already created):
+python -m venv venv
+venv\Scripts\activate
+
+## Install Dependencies within the Virtual Environment:
+pip install -r requirements.txt
+
+
+### IMPORTANT Set up your .env file with the following variables: ##############
+
+OPENAI_API_KEY=your_api_key
+RECON_DATA_PATH=/path/to/recon_data_raw.csv
+RECON_REPLY_PATH=/path/to/recon_data_reply.csv
+RESOLVED_OUTPUT_PATH=/path/to/resolved_cases.csv
+UNRESOLVED_OUTPUT_PATH=/path/to/unresolved_cases.csv
+UNRESOLVED_PATTERN_PATH=/path/to/patterns_for_auto_closure.csv
+AUTO_CLOSURE_PATH=/path/to/auto_closure_patterns.csv
+
+## Running the Script
+To run the script, execute the following command:
+python reconciliation_script.py
+
+
+## Model Choice & Preprocessing Steps
+Model Used: OpenAI gpt-3.5-turbo
+Handles natural language processing for categorization.
+Generates actionable insights for unresolved cases.
+
+## Preprocessing:
+JSON parsing for extracting transaction amounts.
+Data merging using Pandas.
+ThreadPoolExecutor for efficient API requests.
+
+## Check Output Files:
+resolved_cases.csv: Ensure resolved transactions are properly classified.
+unresolved_cases.csv: Verify next-step suggestions.
+patterns_for_auto_closure.csv: Identify frequently occurring patterns for auto-closure.
+
+
+## Manual Review:
+Sample check a few cases to confirm classification accuracy.
+Verify suggested next steps align with business logic.
+
+
+## How I Tested the Solution
+I tested the script by running it on multiple datasets and verifying the outputs at each stage. Here’s how:
+Input Data Validation:
+Ensured recon_data_raw.csv and recon_data_reply.csv were correctly loaded.
+Checked for missing or invalid values in key columns (txn_ref_id, Comments, recon_sub_status).
+
+## Processing Logic Validation:
+Verified that "Not Found-SysB" cases were correctly extracted.
+Ensured correct merging of transaction data with corresponding comments.
+
+## Classification Testing:
+Manually reviewed the OpenAI-generated classifications (Resolved, Unresolved, Pending).
+Compared classification results against expected behavior based on sample comments.
+
+# Output File Validation:
+Opened the generated CSVs to ensure they contained the expected data.

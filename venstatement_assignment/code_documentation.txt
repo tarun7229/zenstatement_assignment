@@ -1,0 +1,51 @@
+# Code Documentation
+
+## Overview
+This script processes reconciliation data, classifies resolution statuses, and identifies patterns for auto-closure. It uses OpenAI for text classification and provides structured output files.
+
+## Setup and Execution
+### 1. Environment Setup
+Ensure you have the necessary Python libraries installed:
+```sh
+pip install pandas openai
+```
+
+### 2. Running the Script
+Execute the script in a Python environment:
+```sh
+python script.py
+```
+
+## Code Structure
+### 1. Data Preprocessing
+- Loads `recon_data_raw.csv` and `recon_data_reply.csv`
+- Extracts relevant fields (`order_id`, `amount`, `date`)
+- Filters `Not Found-SysB` cases
+
+
+### 2. Comment Classification
+- Uses OpenAI to classify comments into:
+  - Resolved
+  - Unresolved
+  - Pending Action
+- Maps classification results to dataset
+
+### 3. Handling Unresolved Cases
+- Generates next steps for unresolved cases using OpenAI
+- Saves results in `unresolved_cases.csv`
+
+### 4. Identifying Patterns for Auto-Closure
+- Groups resolved cases by comment type
+- Flags frequently occurring patterns for auto-closure
+- Saves results in `auto_closure_patterns.csv`
+
+## Output Files
+- `resolved_cases.csv`: Contains resolved cases
+- `unresolved_cases.csv`: Contains unresolved cases with next steps
+- `auto_closure_patterns.csv`: Identifies frequently occurring resolutions for auto-closure
+
+## Evaluation
+- Check `auto_closure_patterns.csv` to determine cases suitable for auto-closure
+- Review `unresolved_cases.csv` for suggested next steps
+- Verify `resolved_cases.csv` for classification accuracy
+
